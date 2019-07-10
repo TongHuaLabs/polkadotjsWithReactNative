@@ -9,12 +9,14 @@
   },
   "dependencies": {
     "@polkadot/api": "^0.81.1",
+    "@polkadot/keyring": "^0.93.1",
     "bs58": "^4.0.1",
     "node-libs-react-native": "^1.0.3",
     "react": "16.8.6",
     "react-native": "0.60.0",
     "react-native-randombytes": "^3.5.3",
-    "vm-browserify": "^1.1.0"
+    "vm-browserify": "^1.1.0",
+    "webassemblyjs": "^1.8.5"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
