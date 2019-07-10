@@ -30,8 +30,11 @@ import { u8aToHex } from "@polkadot/util";
 import {
   bip39Generate,
   bip39ToSeed,
-  waitReady
+  waitReady,
+  isReady
 } from "@polkadot/wasm-crypto";
+
+
 
 class App extends React.Component {
   constructor(props) {
@@ -83,35 +86,18 @@ class App extends React.Component {
       aliceBalance
     })
 
-    // await waitReady();
-
     // // transfer to bob
-    // const Bob = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
-    // // Construct the keyring after the API (crypto has an async init)
-    // const keyring = new Keyring({ type: "sr25519" });
-    // // // // Add alice to our keyring with a hard-deived path (empty phrase, so uses dev)
-    // try {
-    //   const alice = keyring.addFromUri("//Alice");
-    //   // // // Create a extrinsic, transferring 12345 units to Bob
-    //   const extrinsic = api.tx.balances.transfer(Bob, 12345);
-    //   // // Sign and send the transaction using our account
-    //   const hash = await extrinsic.signAndSend(alice);
-    // }
-    // catch(e) {
-    //   this.setState({
-    //     chainInfo: e.toString()
-    //   })
-    // }
-
-    // generate phrase
-    // const phrase = bip39Generate();
- 
-    // // get ed25519 seed from phrase
-    // const seed = bip39ToSeed('test', '');
-    // this.setState({
-    //   transactionHash: phrase
-    // })
-
+    const BOB = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
+    // use ed25519 instead of sr25519 for now, sr25519 uses wasm, which is currently supported
+    const keyring = new Keyring({ type: "ed25519" }); 
+    const alice = keyring.addFromUri("//Alice");
+    console.log(alice.address);
+    const extrinsic = api.tx.balances.transfer(BOB, 12345);
+    // Sign and send the transaction using our account
+    const hash = await extrinsic.signAndSend(alice);
+    this.setState({
+      transactionHash: hash.toString(16)
+    })
   }
 
   render() {
