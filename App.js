@@ -136,7 +136,6 @@ class App extends React.Component {
                   { transactionHash }
                 </Text>
               </View>
-              <LearnMoreLinks />
             </View>
           </ScrollView>
         </SafeAreaView>
