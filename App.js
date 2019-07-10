@@ -24,49 +24,110 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { ApiPromise, WsProvider } from "@polkadot/api";
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { Keyring } from '@polkadot/keyring';
 
-const App = () => {
-  return (
-    <Fragment>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      blockNumber: 0,
+      chainInfo: '',
+      aliceBalance: 0
+    }
+
+    // Initialise the provider to connect to the local node
+    this.provider = new WsProvider("ws://127.0.0.1:9944");
+  }
+
+  async componentDidMount() {
+    const api = await ApiPromise.create({
+      provider: this.provider
+    });
+
+    // Retrieve the chain & node information information via rpc calls
+    const [chain, nodeName, nodeVersion] = await Promise.all([
+      api.rpc.system.chain(),
+      api.rpc.system.name(),
+      api.rpc.system.version()
+    ]);
+    this.setState({
+      chainInfo: `You are connected to chain ${chain} using ${nodeName} v${nodeVersion}`
+    });
+
+    // get latest block number
+    const unsubscribe = await api.rpc.chain.subscribeNewHead(
+      header => {
+        this.setState({
+          blockNumber: `${header.blockNumber}`
+        });
+      }
+    );
+    
+    // get alice balance
+    const Alice = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
+    let aliceBalance = await api.query.balances.freeBalance(Alice);
+    aliceBalance = aliceBalance.toString();
+    this.setState({
+      aliceBalance
+    })
+
+    // transfer to bob
+    const Bob = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
+    // Construct the keyring after the API (crypto has an async init)
+    const keyring = new Keyring({ type: "sr25519" });
+    // Add alice to our keyring with a hard-deived path (empty phrase, so uses dev)
+    const alice = keyring.addFromUri("//Alice");
+    // Create a extrinsic, transferring 12345 units to Bob
+    const extrinsic = api.tx.balances.transfer(Bob, 12345);
+    // Sign and send the transaction using our account
+    const hash = await extrinsic.signAndSend(alice);
+
+  }
+
+  render() {
+    let { blockNumber, chainInfo, aliceBalance } = this.state;
+
+    return (
+      <Fragment>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView>
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={styles.scrollView}>
+            <Header />
+            <View style={styles.body}>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Chain Information</Text>
+                <Text style={styles.sectionDescription}>
+                  { chainInfo }
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Block Number</Text>
+                <Text style={styles.sectionDescription}>
+                  Current Block Number: { blockNumber }
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Read Chain State</Text>
+                <Text style={styles.sectionDescription}>
+                  Alice balance: { aliceBalance } Unit
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Learn More</Text>
+                <Text style={styles.sectionDescription}>
+                  Read the docs to discover what to do next:
+                </Text>
+              </View>
+              <LearnMoreLinks />
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </Fragment>
-  );
+          </ScrollView>
+        </SafeAreaView>
+      </Fragment>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
