@@ -24,6 +24,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { ApiPromise, WsProvider } from "@polkadot/api";
+
 const App = () => {
   return (
     <Fragment>

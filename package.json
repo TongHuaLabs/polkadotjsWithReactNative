@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@polkadot/api": "^0.81.1",
     "bs58": "^4.0.1",
     "node-libs-react-native": "^1.0.3",
     "react": "16.8.6",
