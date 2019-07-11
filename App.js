@@ -26,13 +26,6 @@ import {
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
-import { u8aToHex } from "@polkadot/util";
-import {
-  bip39Generate,
-  bip39ToSeed,
-  waitReady,
-  isReady
-} from "@polkadot/wasm-crypto";
 
 
 
@@ -81,27 +74,34 @@ class App extends React.Component {
     // get alice balance
     const Alice = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
     let aliceBalance = await api.query.balances.freeBalance(Alice);
-    aliceBalance = aliceBalance.toString();
+    const Gavin = "5D18bgh1CtovjnMgJ6eEe8c7ZmKgenR8onjYwD5qeKNbp5QU";
+    let gavinBalance = await api.query.balances.freeBalance(Gavin);
     this.setState({
-      aliceBalance
+      aliceBalance: aliceBalance.toString(),
+      gavinBalance: gavinBalance.toString()
     })
 
-    // // transfer to bob
-    const BOB = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
+    // // transfer 500 to Alice
     // use ed25519 instead of sr25519 for now, sr25519 uses wasm, which is currently supported
     const keyring = new Keyring({ type: "ed25519" }); 
-    const alice = keyring.addFromUri("//Alice");
-    console.log(alice.address);
-    const extrinsic = api.tx.balances.transfer(BOB, 12345);
+    const gavin = keyring.addFromUri("//Gavin");
+    // gavin.address equals to "5D18bgh1CtovjnMgJ6eEe8c7ZmKgenR8onjYwD5qeKNbp5QU"
+    const extrinsic = api.tx.balances.transfer(Alice, 500);
     // Sign and send the transaction using our account
-    const hash = await extrinsic.signAndSend(alice);
+    const hash = await extrinsic.signAndSend(gavin);
     this.setState({
       transactionHash: hash.toString(16)
     })
   }
 
   render() {
-    let { blockNumber, chainInfo, aliceBalance, transactionHash } = this.state;
+    let { 
+      blockNumber, 
+      chainInfo, 
+      aliceBalance, 
+      gavinBalance,
+      transactionHash
+     } = this.state;
 
     return (
       <Fragment>
@@ -109,31 +109,31 @@ class App extends React.Component {
         <SafeAreaView>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
+            style={styles.scrollView}
+          >
             <Header />
             <View style={styles.body}>
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>Chain Information</Text>
-                <Text style={styles.sectionDescription}>
-                  { chainInfo }
-                </Text>
+                <Text style={styles.sectionDescription}>{chainInfo}</Text>
               </View>
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>Block Number</Text>
                 <Text style={styles.sectionDescription}>
-                  Current Block Number: { blockNumber }
+                  Current Block Number: {blockNumber}
                 </Text>
               </View>
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>Read Chain State</Text>
                 <Text style={styles.sectionDescription}>
-                  Alice balance: { aliceBalance } Unit
+                  Alice balance: {aliceBalance} Unit {"\n"}
+                  Gavin balance: {gavinBalance} Unit
                 </Text>
               </View>
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Transfer</Text>
+                <Text style={styles.sectionTitle}>Transfer from Gavin to Alice</Text>
                 <Text style={styles.sectionDescription}>
-                  { transactionHash }
+                  TX: {transactionHash}
                 </Text>
               </View>
             </View>
