@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native start",
+    "start": "NODE_OPTIONS=--max_old_space_size=8192 react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "ios": "react-native run-ios",
+    "android": "react-native run-android"
   },
   "dependencies": {
     "@polkadot/api": "^0.81.1",
