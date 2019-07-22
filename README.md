@@ -88,5 +88,5 @@ yarn react-native run-ios
 // yarn react-native run-android
 ```
 
-### TODO
-- Add WebAssembly polyfill to support sr25519 and other features. More info on this here: https://github.com/polkadot-js/wasm/issues/19
+### References
+- Uses asm.js as fallback for wasm - https://github.com/polkadot-js/wasm/issues/19
