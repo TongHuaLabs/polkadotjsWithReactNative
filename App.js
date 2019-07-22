@@ -83,14 +83,14 @@ class App extends React.Component {
 
     // // transfer 500 to Alice
     // use ed25519 instead of sr25519 for now, sr25519 uses wasm, which is currently supported
-    const keyring = new Keyring({ type: "ed25519" }); 
-    const gavin = keyring.addFromUri("//Gavin");
+    const keyring = new Keyring({ type: "sr25519" }); 
+    const gavin = keyring.addFromUri("//Alice");
     // gavin.address equals to "5D18bgh1CtovjnMgJ6eEe8c7ZmKgenR8onjYwD5qeKNbp5QU"
-    const extrinsic = api.tx.balances.transfer(Alice, 500);
+    // const extrinsic = api.tx.balances.transfer(Alice, 500);
     // Sign and send the transaction using our account
-    const hash = await extrinsic.signAndSend(gavin);
+    // const hash = await extrinsic.signAndSend(gavin);
     this.setState({
-      transactionHash: hash.toString(16)
+      transactionHash: gavin.address
     })
   }
 
