@@ -4,7 +4,7 @@ A boilertemplate for using polkadot-js with React Native (>= 0.60.0)
 ### Features
 - Support RN >= 0.60.0
 - Can successfully read chain state
-- Can transfer funds by signing transactions with ed25519 keys
+- Can transfer funds by signing transactions with sr25519/ed25519 keys
 
 ### Test Environment
 ```
@@ -83,9 +83,10 @@ yarn add @polkadot/keyring
 8. Import and Test   
 
 9. Run
+We need the env var for extra space for asm.js (view reference for more info)
 ```
-yarn react-native run-ios
-// yarn react-native run-android
+1. NODE_OPTIONS=--max_old_space_size=8192 yarn start
+2. yarn react-native run-ios // yarn react-native run-android
 ```
 
 ### References
