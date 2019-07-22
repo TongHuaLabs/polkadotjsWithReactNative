@@ -3,27 +3,28 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native start",
+    "start": "NODE_OPTIONS=--max_old_space_size=8192 react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "ios": "react-native run-ios",
+    "android": "react-native run-android"
   },
   "dependencies": {
     "@polkadot/api": "^0.81.1",
-    "@polkadot/keyring": "^0.93.1",
+    "@polkadot/keyring": "^0.94.1",
     "bs58": "^4.0.1",
     "node-libs-react-native": "^1.0.3",
     "react": "16.8.6",
-    "react-native": "0.60.0",
+    "react-native": "0.60.4",
     "react-native-randombytes": "^3.5.3",
-    "vm-browserify": "^1.1.0",
-    "webassemblyjs": "^1.8.5"
+    "vm-browserify": "^1.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.4",
-    "@babel/runtime": "^7.5.4",
+    "@babel/core": "^7.5.5",
+    "@babel/runtime": "^7.5.5",
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.8.0",
-    "eslint": "^6.0.1",
+    "eslint": "^6.1.0",
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.55.0",
     "react-test-renderer": "16.8.6"

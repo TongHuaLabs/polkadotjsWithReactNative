@@ -81,14 +81,16 @@ class App extends React.Component {
       gavinBalance: gavinBalance.toString()
     })
 
-    // // transfer 500 to Alice
-    // use ed25519 instead of sr25519 for now, sr25519 uses wasm, which is currently supported
-    const keyring = new Keyring({ type: "ed25519" }); 
-    const gavin = keyring.addFromUri("//Gavin");
+    // transfer 500 to Gavin
+    const keyring = new Keyring({ type: "sr25519" }); 
+    const alice = keyring.addFromUri("//Alice");
+    // const keyring = new Keyring({ type: "ed25519" }); 
+    // const gavin = keyring.addFromUri("//Gavin");
     // gavin.address equals to "5D18bgh1CtovjnMgJ6eEe8c7ZmKgenR8onjYwD5qeKNbp5QU"
-    const extrinsic = api.tx.balances.transfer(Alice, 500);
+    // alice.address = 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+    const extrinsic = api.tx.balances.transfer(Gavin, 500);
     // Sign and send the transaction using our account
-    const hash = await extrinsic.signAndSend(gavin);
+    const hash = await extrinsic.signAndSend(alice);
     this.setState({
       transactionHash: hash.toString(16)
     })
@@ -131,7 +133,7 @@ class App extends React.Component {
                 </Text>
               </View>
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Transfer from Gavin to Alice</Text>
+                <Text style={styles.sectionTitle}>Transfer from Alice to Gavin</Text>
                 <Text style={styles.sectionDescription}>
                   TX: {transactionHash}
                 </Text>
